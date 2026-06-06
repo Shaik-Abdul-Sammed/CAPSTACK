@@ -14,17 +14,6 @@ CAPSTACK is a comprehensive multi-service platform designed to democratize finan
 
 Designed for the **Datanyx 2025 International Hackathon**, this edition features premium UI/UX, production-ready code stability, advanced data visualizations, and comprehensive educational safety measures.
 
----
-
-## 👥 Team Error 404
-
-**Team Members:**
-- **Shaik Abdul Sammed** - Full Stack Developer & Team Lead
-- **Shaik Muzkeer** - Backend Developer
-- **Shaik Shafi** - Frontend Developer
-- **B. Praveen** - ML Engineer
-
----
 
 ## 📋 Table of Contents
 
