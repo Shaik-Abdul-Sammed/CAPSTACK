@@ -152,6 +152,16 @@ ml-service/
 7. **Access API documentation**
    Open [http://localhost:8000/docs](http://localhost:8000/docs) for interactive API docs
 
+### Local Train-and-Serve Workflow
+
+For a local model refresh before serving on localhost, run:
+
+```bash
+python run_local_workflow.py --serve --host 127.0.0.1 --port 8000
+```
+
+Use `--train-only` if you want to generate the datasets, train the models, and write the ranking report without starting the server.
+
 ---
 
 ## ⚙️ Environment Variables

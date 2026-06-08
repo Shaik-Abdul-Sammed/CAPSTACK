@@ -5,6 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, mean_squared_error, r2_score
+from sklearn.metrics import accuracy_score
 import joblib
 import os
 from typing import Dict, List, Tuple, Any
@@ -68,6 +69,115 @@ class EnhancedFinancialModels:
             }
         }
 
+        self.training_profiles = {
+            'fast': {
+                'fraud_detection': {'n_estimators': 180, 'max_depth': 10, 'min_samples_split': 4, 'min_samples_leaf': 1, 'class_weight': 'balanced'},
+                'crisis_prediction': {'n_estimators': 120, 'learning_rate': 0.08, 'max_depth': 4},
+                'income_volatility': {'n_estimators': 150, 'max_depth': 8, 'min_samples_split': 3},
+                'anomaly_detection': {'contamination': 0.05, 'n_estimators': 120},
+            },
+            'balanced': {
+                'fraud_detection': {'n_estimators': 300, 'max_depth': 15, 'min_samples_split': 5, 'min_samples_leaf': 2, 'class_weight': 'balanced'},
+                'crisis_prediction': {'n_estimators': 200, 'learning_rate': 0.1, 'max_depth': 6},
+                'income_volatility': {'n_estimators': 250, 'max_depth': 12, 'min_samples_split': 4},
+                'anomaly_detection': {'contamination': 0.05, 'n_estimators': 200},
+            },
+            'thorough': {
+                'fraud_detection': {'n_estimators': 450, 'max_depth': 18, 'min_samples_split': 4, 'min_samples_leaf': 1, 'class_weight': 'balanced'},
+                'crisis_prediction': {'n_estimators': 300, 'learning_rate': 0.08, 'max_depth': 8},
+                'income_volatility': {'n_estimators': 350, 'max_depth': 14, 'min_samples_split': 3},
+                'anomaly_detection': {'contamination': 0.04, 'n_estimators': 300},
+            },
+        }
+
+    def _apply_training_profile(self, model_name: str, profile: str) -> Dict[str, Any]:
+        profile_config = self.training_profiles.get(profile, self.training_profiles['balanced'])
+        if model_name not in profile_config:
+            return {}
+        return profile_config[model_name]
+
+    def train_fraud_detection_model_fast(self, data_path: str = "data/real_world/fraud_detection_enhanced.csv") -> Dict[str, Any]:
+        """Train fraud detection with a faster profile for local iteration."""
+        return self.train_fraud_detection_model_with_profile(data_path=data_path, profile='fast')
+
+    def train_fraud_detection_model_with_profile(self, data_path: str = "data/real_world/fraud_detection_enhanced.csv", profile: str = 'balanced') -> Dict[str, Any]:
+        """Train fraud detection with a selectable efficiency profile."""
+        original_config = dict(self.model_configs['fraud_detection']['params'])
+        try:
+            self.model_configs['fraud_detection']['params'].update(self._apply_training_profile('fraud_detection', profile))
+            return self.train_fraud_detection_model(data_path=data_path)
+        finally:
+            self.model_configs['fraud_detection']['params'] = original_config
+
+    def train_crisis_prediction_model_fast(self, data_path: str = "data/real_world/financial_crisis_dataset.csv", max_rows: int = 2000) -> Dict[str, Any]:
+        """Train crisis prediction with a faster profile for local iteration."""
+        return self.train_crisis_prediction_model_with_profile(data_path=data_path, max_rows=max_rows, profile='fast')
+
+    def train_crisis_prediction_model_with_profile(self, data_path: str = "data/real_world/financial_crisis_dataset.csv", max_rows: int = 3000, profile: str = 'balanced') -> Dict[str, Any]:
+        """Train crisis prediction with a selectable efficiency profile."""
+        original_config = dict(self.model_configs['crisis_prediction']['params'])
+        try:
+            self.model_configs['crisis_prediction']['params'].update(self._apply_training_profile('crisis_prediction', profile))
+            return self.train_crisis_prediction_model(data_path=data_path, max_rows=max_rows)
+        finally:
+            self.model_configs['crisis_prediction']['params'] = original_config
+
+    def train_income_volatility_model_fast(self, data_path: str = "data/real_world/income_volatility_dataset.csv") -> Dict[str, Any]:
+        """Train income volatility with a faster profile for local iteration."""
+        return self.train_income_volatility_model_with_profile(data_path=data_path, profile='fast')
+
+    def train_income_volatility_model_with_profile(self, data_path: str = "data/real_world/income_volatility_dataset.csv", profile: str = 'balanced') -> Dict[str, Any]:
+        """Train income volatility with a selectable efficiency profile."""
+        original_config = dict(self.model_configs['income_volatility']['params'])
+        try:
+            self.model_configs['income_volatility']['params'].update(self._apply_training_profile('income_volatility', profile))
+            return self.train_income_volatility_model(data_path=data_path)
+        finally:
+            self.model_configs['income_volatility']['params'] = original_config
+
+    def train_anomaly_detection_model_fast(self, data_path: str = "data/real_world/financial_crisis_dataset.csv") -> Dict[str, Any]:
+        """Train anomaly detection with a faster profile for local iteration."""
+        return self.train_anomaly_detection_model_with_profile(data_path=data_path, profile='fast')
+
+    def train_anomaly_detection_model_with_profile(self, data_path: str = "data/real_world/financial_crisis_dataset.csv", profile: str = 'balanced') -> Dict[str, Any]:
+        """Train anomaly detection with a selectable efficiency profile."""
+        original_config = dict(self.model_configs['anomaly_detection']['params'])
+        try:
+            self.model_configs['anomaly_detection']['params'].update(self._apply_training_profile('anomaly_detection', profile))
+            return self.train_anomaly_detection_model(data_path=data_path)
+        finally:
+            self.model_configs['anomaly_detection']['params'] = original_config
+
+    def train_all_models_with_profile(self, profile: str = 'balanced', crisis_rows: int = 3000) -> Dict[str, Any]:
+        """Train all enhanced models using a named efficiency profile."""
+        results: Dict[str, Any] = {}
+        results['fraud_detection'] = self.train_fraud_detection_model_with_profile(profile=profile)
+        results['crisis_prediction'] = self.train_crisis_prediction_model_with_profile(max_rows=crisis_rows, profile=profile)
+        results['income_volatility'] = self.train_income_volatility_model_with_profile(profile=profile)
+        results['anomaly_detection'] = self.train_anomaly_detection_model_with_profile(profile=profile)
+        return results
+
+    def compare_training_profiles(self, data_paths: Dict[str, str], crisis_rows: int = 3000) -> Dict[str, Dict[str, Any]]:
+        """Train the suite under multiple profiles and compare the resulting scores."""
+        comparison: Dict[str, Dict[str, Any]] = {}
+        for profile in ('fast', 'balanced', 'thorough'):
+            results = {
+                'fraud_detection': self.train_fraud_detection_model_with_profile(data_paths['fraud_detection'], profile=profile),
+                'crisis_prediction': self.train_crisis_prediction_model_with_profile(data_paths['crisis_prediction'], max_rows=crisis_rows, profile=profile),
+                'income_volatility': self.train_income_volatility_model_with_profile(data_paths['income_volatility'], profile=profile),
+                'anomaly_detection': self.train_anomaly_detection_model_with_profile(data_paths['anomaly_detection'], profile=profile),
+            }
+            comparison[profile] = {
+                'scores': {
+                    'fraud_detection': results['fraud_detection']['accuracy'] * 0.6 + results['fraud_detection']['roc_auc'] * 0.4,
+                    'crisis_prediction': sum(target['r2'] for target in results['crisis_prediction']['targets'].values()) / len(results['crisis_prediction']['targets']),
+                    'income_volatility': results['income_volatility']['accuracy'],
+                    'anomaly_detection': max(0.0, 1.0 - abs(results['anomaly_detection']['anomaly_rate'] - 0.05) * 10),
+                },
+                'results': results,
+            }
+        return comparison
+
     def train_fraud_detection_model(self, data_path: str = "data/real_world/fraud_detection_enhanced.csv") -> Dict[str, Any]:
         """
         Train enhanced fraud detection model with real-world patterns
@@ -121,14 +231,17 @@ class EnhancedFinancialModels:
         model.fit(X_train_scaled, y_train)
         
         # Predictions
+        y_train_pred = model.predict(X_train_scaled)
         y_pred = model.predict(X_test_scaled)
         y_pred_proba = model.predict_proba(X_test_scaled)[:, 1]
         
         # Metrics
+        train_accuracy = accuracy_score(y_train, y_train_pred)
         accuracy = model.score(X_test_scaled, y_test)
         roc_auc = roc_auc_score(y_test, y_pred_proba)
         
         print(f"Fraud Detection Model Performance:")
+        print(f"Training Accuracy: {train_accuracy:.4f}")
         print(f"Accuracy: {accuracy:.4f}")
         print(f"ROC-AUC: {roc_auc:.4f}")
         print(f"Classification Report:\n{classification_report(y_test, y_pred)}")
@@ -145,20 +258,21 @@ class EnhancedFinancialModels:
         
         return {
             'model_type': 'fraud_detection',
+            'train_accuracy': train_accuracy,
             'accuracy': accuracy,
             'roc_auc': roc_auc,
             'feature_importance': feature_importance,
             'cv_scores': cv_scores.tolist()
         }
 
-    def train_crisis_prediction_model(self, data_path: str = "data/real_world/financial_crisis_dataset.csv") -> Dict[str, Any]:
+    def train_crisis_prediction_model(self, data_path: str = "data/real_world/financial_crisis_dataset.csv", max_rows: int = 3000) -> Dict[str, Any]:
         """
         Train model to predict financial crisis survival and recovery
         """
         print("Training Financial Crisis Prediction Model...")
         
         # Load data
-        df = pd.read_csv(data_path)
+        df = pd.read_csv(data_path, nrows=max_rows)
         
         # Feature engineering
         df = self._engineer_crisis_features(df)
@@ -300,12 +414,16 @@ class EnhancedFinancialModels:
         model.fit(X_train_scaled, y_train)
         
         # Predictions
+        y_train_pred = model.predict(X_train_scaled)
         y_pred = model.predict(X_test_scaled)
         
         # Metrics
+        train_accuracy = accuracy_score(y_train, y_train_pred)
         accuracy = model.score(X_test_scaled, y_test)
         
         print(f"Income Volatility Model Performance:")
+
+        print(f"Training Accuracy: {train_accuracy:.4f}")
         print(f"Accuracy: {accuracy:.4f}")
         print(f"Classification Report:\n{classification_report(y_test, y_pred)}")
         
@@ -321,6 +439,7 @@ class EnhancedFinancialModels:
         
         return {
             'model_type': 'income_volatility',
+            'train_accuracy': train_accuracy,
             'accuracy': accuracy,
             'feature_importance': feature_importance,
             'cv_scores': cv_scores.tolist()
@@ -418,6 +537,22 @@ class EnhancedFinancialModels:
         df['crisis_debt_impact'] = df['crisis_severity'] * df['debt_to_income_ratio']
         
         # Recovery potential
+        if 'job_stability_score' not in df.columns:
+            # Approximate job stability using age, income resilience, and debt burden.
+            df['job_stability_score'] = np.clip(
+                1.2 - df['debt_to_income_ratio'] - (df['crisis_severity'] * 0.35),
+                0,
+                1,
+            )
+
+        if 'skill_relevance_score' not in df.columns:
+            # Approximate skill relevance from recovery speed proxies and employment resilience.
+            df['skill_relevance_score'] = np.clip(
+                1 - (df['income_loss_percentage'] * 0.6) + (df['emergency_adequacy'] * 0.08),
+                0,
+                1,
+            )
+
         df['recovery_potential'] = (df['job_stability_score'] + df['skill_relevance_score']) / 2
         
         return df

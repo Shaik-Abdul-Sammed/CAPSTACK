@@ -10,33 +10,30 @@ vi.mock('../components/Layout', () => ({
 describe('TaxCalculator', () => {
     test('renders tax calculator page with title', () => {
         render(<TaxCalculator />);
-        expect(screen.getByText(/Tax Calculator/i)).toBeTruthy();
+        expect(screen.getByText(/Tax Optimizer/i)).toBeTruthy();
     });
 
     test('displays income input section', () => {
         render(<TaxCalculator />);
-        expect(screen.getByText(/Income Details/i)).toBeTruthy();
-        const annualIncome = screen.getAllByText(/Annual Income/i);
-        expect(annualIncome.length).toBeGreaterThan(0);
-        const taxRegime = screen.getAllByText(/Tax Regime/i);
-        expect(taxRegime.length).toBeGreaterThan(0);
+        expect(screen.getByText(/Financial Inputs/i)).toBeTruthy();
+        expect(screen.getByLabelText(/Annual Gross Salary/i)).toBeTruthy();
+        expect(screen.getByLabelText(/Section 80C/i)).toBeTruthy();
     });
 
     test('shows tax summary cards', () => {
         render(<TaxCalculator />);
-        expect(screen.getByText(/Taxable Income/i)).toBeTruthy();
-        expect(screen.getByText(/Total Tax/i)).toBeTruthy();
-        expect(screen.getByText(/Annual Take Home/i)).toBeTruthy();
-        expect(screen.getByText(/Monthly Take Home/i)).toBeTruthy();
+        expect(screen.getByText(/New Regime/i)).toBeTruthy();
+        expect(screen.getAllByText(/Old Regime/i).length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/Monthly Take-home/i).length).toBeGreaterThanOrEqual(1);
     });
 
     test('displays income distribution chart', () => {
         render(<TaxCalculator />);
-        expect(screen.getByText(/Income Distribution/i)).toBeTruthy();
+        expect(screen.getByText(/Regime Comparison/i)).toBeTruthy();
     });
 
     test('shows tax saving recommendations', () => {
         render(<TaxCalculator />);
-        expect(screen.getByText(/Tax Saving Recommendations/i)).toBeTruthy();
+        expect(screen.getByText(/Save/i)).toBeTruthy();
     });
 });

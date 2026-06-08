@@ -18,17 +18,6 @@ from pydantic import BaseModel, Field, field_validator, ConfigDict
 from pydantic import FieldValidationInfo
 from app.routers import enhanced_security
 
-app = FastAPI(
-    title="CAPSTACK ML Service", 
-    version="2.0.0",
-    description="Enhanced ML service with real-world financial crisis simulation and fraud detection",
-    docs_url="/docs",
-    redoc_url="/redoc"
-)
-
-# Include enhanced security router
-app.include_router(enhanced_security.router)
-
 from .models import load_all_models, risk_model, layoff_model, savings_model
 
 # Configure logging
@@ -45,6 +34,9 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+# Include enhanced security router on the active app instance.
+app.include_router(enhanced_security.router)
 
 # Model and data directories
 MODEL_DIR = "app/models"

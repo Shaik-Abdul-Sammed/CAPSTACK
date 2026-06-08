@@ -9,7 +9,20 @@ import {
   getBenchmark,
   getCashFlow,
   getDebtRecommendation,
+  getLoanRecommendation,
 } from "../controllers/financeController";
+import {
+  getActionPlan,
+  getBudgetHealth,
+  getCashReservePlan,
+  getDebtPayoffPlan,
+  getEmergencyFundPlan,
+  getExpenseStressTest,
+  getFinancialSnapshot,
+  getIncomeStabilitySummary,
+  getRiskProfileSummary,
+  getSavingsGoalPlan,
+} from "../controllers/financialPlanningController";
 import {
   sendAlert,
   sendAchievementNotification,
@@ -744,5 +757,16 @@ router.get("/ai-summary", optionalAuthMiddleware, getAISummary);
 router.get("/benchmark", optionalAuthMiddleware, getBenchmark);
 router.get("/cashflow", optionalAuthMiddleware, getCashFlow);
 router.get("/debt-recommendation", optionalAuthMiddleware, getDebtRecommendation);
+router.post("/loan-recommendation", optionalAuthMiddleware, getLoanRecommendation);
+router.post("/budget-health", optionalAuthMiddleware, getBudgetHealth);
+router.post("/emergency-fund-plan", optionalAuthMiddleware, getEmergencyFundPlan);
+router.post("/debt-payoff-plan", optionalAuthMiddleware, getDebtPayoffPlan);
+router.post("/savings-goal-plan", optionalAuthMiddleware, getSavingsGoalPlan);
+router.post("/expense-stress-test", optionalAuthMiddleware, getExpenseStressTest);
+router.post("/income-stability-summary", optionalAuthMiddleware, getIncomeStabilitySummary);
+router.post("/financial-snapshot", optionalAuthMiddleware, getFinancialSnapshot);
+router.post("/risk-profile-summary", optionalAuthMiddleware, getRiskProfileSummary);
+router.post("/cash-reserve-plan", optionalAuthMiddleware, getCashReservePlan);
+router.post("/action-plan", optionalAuthMiddleware, getActionPlan);
 
 export default router;

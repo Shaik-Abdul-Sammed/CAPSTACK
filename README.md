@@ -85,30 +85,17 @@ The application is fully deployed and production-ready on the **Render Cloud Pla
 | **💰 Smart Savings Lock** | A digital vault that locks funds for specific durations to enforce saving discipline. |
 | **🎯 Asset Allocation** | AI-recommended portfolio distribution based on user risk profile and market conditions. |
 
-<<<<<<< HEAD
-### 🚀 **Enhanced Features (Latest Implementation)**
+### 🚀 Enhanced Features
 
 | Feature | Description |
 |---------|-------------|
-| **📊 Interactive Sankey Diagrams** | D3.js powered cash flow visualization showing Income → Essentials → Debt → Savings |
+| **📊 Interactive Sankey Diagrams** | D3.js-powered cash flow visualization showing Income → Essentials → Debt → Savings |
 | **⏱️ Financial Pulse Gauge** | Real-time animated gauge with color-coded survival periods (Red/Yellow/Green/Blue) |
 | **🤖 AI-Generated Summaries** | Natural language explanations of financial data and trends |
 | **🎲 Monte Carlo Simulator** | 10-year net worth projections with confidence intervals for what-if scenarios |
 | **🎯 AI Debt Coach** | Automated debt snowball recommendations prioritizing highest-interest debts |
 | **📈 Anonymized Benchmarking** | Comparative analytics showing percentile rankings vs similar users |
 | **📚 Educational Safety** | Prominent disclaimers and synthetic data for responsible learning |
-
-### Hackathon Edition Enhancements
-
-- **Glassmorphism UI**: Modern design system with gradient palettes and fluid animations.
-- **Advanced Visualizations**: D3.js Sankey diagrams, Recharts integration, and interactive simulations.
-- **Robust Error Handling**: Centralized error boundaries and graceful degradation strategies.
-- **Educational Framework**: Clear disclaimers, synthetic datasets, and safe experimentation environment.
-- **Advanced Security**: JWT-based authentication with secure session management and audit logging.
-=======
-### 🔐 Cybersecurity & Blockchain (NEW)
-| Feature | Description |
-|---------|-------------|
 | **🛡️ Fraud Detection** | ML-based fraud detection (93% accuracy) with real-time risk scoring |
 | **🚨 Intrusion Detection** | Anomaly detection for suspicious access patterns and behavioral threats |
 | **⛓️ Blockchain Ledger** | Ethereum smart contracts for immutable transaction recording and audit trails |
@@ -117,11 +104,13 @@ The application is fully deployed and production-ready on the **Render Cloud Pla
 | **✅ Digital Signatures** | ECDSA-based transaction signing and verification |
 
 ### Hackathon Edition Enhancements
-* **Glassmorphism UI**: Modern design system with gradient palettes and fluid animations.
-* **Interactive Visualizations**: Animated circular scores, pulse effects, and real-time chart updates.
-* **Robust Error Handling**: Centralized error boundaries and graceful degradation strategies.
-* **Enterprise Security**: AES-256 encryption, JWT authentication, blockchain verification, ML-based threat detection.
->>>>>>> 53556ae (🔒 Add enterprise cybersecurity & blockchain integration)
+
+- **Glassmorphism UI**: Modern design system with gradient palettes and fluid animations.
+- **Advanced Visualizations**: D3.js Sankey diagrams, Recharts integration, and interactive simulations.
+- **Interactive Insights**: Animated circular scores, pulse effects, and real-time chart updates.
+- **Robust Error Handling**: Centralized error boundaries and graceful degradation strategies.
+- **Educational Framework**: Clear disclaimers, synthetic datasets, and safe experimentation environment.
+- **Enterprise Security**: AES-256 encryption, JWT authentication, blockchain verification, ML-based threat detection.
 
 ---
 
@@ -364,17 +353,11 @@ CAPSTACK-2k25/
 
 ### Prerequisites
 
-<<<<<<< HEAD
-- Node.js v18+
-- Python 3.11+ (for ML service)
-- PostgreSQL 14+
-=======
-  * Node.js v18+
-  * Python 3.11+ (for ML service)
-  * PostgreSQL 14+
-  * Ethereum RPC endpoint (Infura, Alchemy, or local node)
-  * Git
->>>>>>> 53556ae (🔒 Add enterprise cybersecurity & blockchain integration)
+* Node.js v18+
+* Python 3.11+ (for ML service)
+* PostgreSQL 14+
+* Ethereum RPC endpoint (Infura, Alchemy, or local node)
+* Git
 
 ### Quick Start (Render-style, no Docker)
 

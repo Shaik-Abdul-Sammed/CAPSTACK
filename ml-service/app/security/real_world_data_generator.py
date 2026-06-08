@@ -108,7 +108,7 @@ class RealWorldDataGenerator:
         
         for i in range(n_samples):
             # Transaction characteristics
-            amount = np.random.lognormal(3, 2)
+            amount = np.random.lognormal(2.7, 0.7)
             merchant_category = random.choice([
                 'retail', 'dining', 'travel', 'utilities', 'online', 
                 'gambling', 'crypto', 'remittance', 'education', 'healthcare'
@@ -117,22 +117,22 @@ class RealWorldDataGenerator:
             # User behavior patterns
             user_id = random.randint(1, 10000)
             account_age = np.random.uniform(1, 3650)
-            typical_transaction_amount = np.random.lognormal(3, 1.5)
+            typical_transaction_amount = np.random.lognormal(2.7, 0.6)
             
             # Fraud indicators
-            is_fraud = random.random() < 0.03  # 3% fraud rate
-            geographic_distance = np.random.uniform(0, 5000)
-            time_since_last_tx = np.random.exponential(24)
-            device_mismatch = random.random() < 0.15
-            velocity_check = np.random.uniform(0, 20)
+            is_fraud = random.random() < 0.04  # 4% fraud rate
+            geographic_distance = np.random.uniform(0, 1200)
+            time_since_last_tx = np.random.exponential(30)
+            device_mismatch = random.random() < 0.08
+            velocity_check = np.random.uniform(0, 8)
             
             if is_fraud:
                 # Fraud patterns
-                amount *= np.random.uniform(2, 10)  # Higher amounts
-                geographic_distance *= np.random.uniform(2, 5)  # Unusual locations
-                time_since_last_tx = np.random.uniform(0.1, 1)  # Rapid transactions
-                device_mismatch = random.random() < 0.7  # More likely device mismatch
-                velocity_check = np.random.uniform(10, 50)  # High velocity
+                amount *= np.random.uniform(6, 18)  # Clearly higher amounts
+                geographic_distance = np.random.uniform(1500, 10000)  # Unusual locations
+                time_since_last_tx = np.random.uniform(0.01, 0.75)  # Rapid transactions
+                device_mismatch = random.random() < 0.95  # Much more likely device mismatch
+                velocity_check = np.random.uniform(12, 60)  # High velocity
                 
                 # Specific fraud scenarios
                 fraud_type = random.choice(['account_takeover', 'card_theft', 'identity_theft', 'synthetic_identity'])
@@ -140,6 +140,12 @@ class RealWorldDataGenerator:
                     merchant_category = random.choice(['online', 'crypto', 'gambling'])
                 elif fraud_type == 'card_theft':
                     geographic_distance = np.random.uniform(1000, 10000)
+            else:
+                # Non-fraud transactions stay in a much tighter behavioral band.
+                amount = np.clip(amount, 2, 400)
+                geographic_distance = np.random.uniform(0, 900)
+                time_since_last_tx = np.random.exponential(36)
+                velocity_check = np.random.uniform(0, 6)
             
             # Risk scoring features
             ip_risk_score = self._calculate_ip_risk(geographic_distance, device_mismatch)
@@ -430,21 +436,27 @@ class RealWorldDataGenerator:
         
         return growth_rates.get(industry, 0.05)
 
-    def save_datasets(self, output_dir: str = "data/real_world"):
+    def save_datasets(
+        self,
+        output_dir: str = "data/real_world",
+        crisis_samples: int = 50000,
+        fraud_samples: int = 100000,
+        income_samples: int = 30000,
+    ):
         """Generate and save all datasets"""
         import os
         os.makedirs(output_dir, exist_ok=True)
         
         print("Generating financial crisis dataset...")
-        crisis_data = self.generate_financial_crisis_dataset()
+        crisis_data = self.generate_financial_crisis_dataset(crisis_samples)
         crisis_data.to_csv(f"{output_dir}/financial_crisis_dataset.csv", index=False)
         
         print("Generating enhanced fraud detection dataset...")
-        fraud_data = self.generate_fraud_detection_dataset()
+        fraud_data = self.generate_fraud_detection_dataset(fraud_samples)
         fraud_data.to_csv(f"{output_dir}/fraud_detection_enhanced.csv", index=False)
         
         print("Generating income volatility dataset...")
-        income_data = self.generate_income_volatility_dataset()
+        income_data = self.generate_income_volatility_dataset(income_samples)
         income_data.to_csv(f"{output_dir}/income_volatility_dataset.csv", index=False)
         
         # Generate summary statistics

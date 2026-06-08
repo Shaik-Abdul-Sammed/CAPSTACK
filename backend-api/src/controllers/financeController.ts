@@ -4,6 +4,7 @@ import { calculateSurvivalMonths } from '../services/survivalService';
 import { calculateIncomeSuitabilityScore } from '../services/incomeVarianceService';
 import { monteCarloProjection } from '../services/whatIfService';
 import { getDebtSnowballRecommendation } from '../services/aiCoachService';
+import { buildLoanRecommendation, type LoanType } from '../services/loanRecommendationService';
 import { logger } from '../utils/logger';
 
 export const calculateFinance = async (req: Request, res: Response) => {
@@ -145,5 +146,49 @@ export const getCashFlow = async (req: Request, res: Response) => {
 export const getDebtRecommendation = async (req: Request, res: Response) => {
   const userId = (req as any).userId;
   const recommendation = await getDebtSnowballRecommendation(userId || 0);
+  res.json(recommendation);
+};
+
+export const getLoanRecommendation = async (req: Request, res: Response) => {
+  const userId = (req as any).userId;
+
+  const {
+    annualIncome,
+    monthlyExpenses,
+    existingEmi,
+    desiredLoanAmount,
+    tenureMonths,
+    creditScore,
+    employmentYears,
+    loanType,
+  } = req.body || {};
+
+  if (!annualIncome || !monthlyExpenses || !desiredLoanAmount || !tenureMonths || !creditScore || !employmentYears || !loanType) {
+    return res.status(400).json({
+      error: 'Missing required fields',
+      required: ['annualIncome', 'monthlyExpenses', 'desiredLoanAmount', 'tenureMonths', 'creditScore', 'employmentYears', 'loanType'],
+    });
+  }
+
+  const allowedTypes: LoanType[] = ['personal_loan', 'home_loan', 'car_loan', 'education_loan', 'business_loan'];
+  if (!allowedTypes.includes(loanType)) {
+    return res.status(400).json({
+      error: 'Invalid loanType',
+      allowed: allowedTypes,
+    });
+  }
+
+  const recommendation = await buildLoanRecommendation({
+    userId,
+    annualIncome: Number(annualIncome),
+    monthlyExpenses: Number(monthlyExpenses),
+    existingEmi: existingEmi !== undefined ? Number(existingEmi) : undefined,
+    desiredLoanAmount: Number(desiredLoanAmount),
+    tenureMonths: Number(tenureMonths),
+    creditScore: Number(creditScore),
+    employmentYears: Number(employmentYears),
+    loanType,
+  });
+
   res.json(recommendation);
 };

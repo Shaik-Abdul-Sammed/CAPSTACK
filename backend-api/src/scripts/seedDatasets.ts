@@ -8,6 +8,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const datasetPath = path.join(__dirname, '../../../../dataset');
 
+type CsvPrimitive = string | number | null | undefined;
+type CsvRow = Record<string, CsvPrimitive>;
+
 async function seedDatasets() {
     try {
         console.log('🌱 Starting dataset migration and seeding...');
@@ -30,7 +33,7 @@ async function seedDatasets() {
         await query('TRUNCATE TABLE dataset_benefits RESTART IDENTITY CASCADE');
 
         // Helper to load CSV
-        const loadCSV = (filename: string) => {
+        const loadCSV = <T extends CsvRow>(filename: string): T[] => {
             const filePath = path.join(datasetPath, filename);
             if (!fs.existsSync(filePath)) return [];
             const fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -43,12 +46,34 @@ async function seedDatasets() {
                     }
                     return value;
                 },
-            });
+            }) as T[];
         };
+
+        type SalaryCsvRow = CsvRow & { YearsExperience?: number; Salary?: number };
+        type TurnoverCsvRow = CsvRow & {
+            stag?: number;
+            event?: number;
+            gender?: string;
+            age?: number;
+            industry?: string;
+            profession?: string;
+            traffic?: string;
+            coach?: string;
+            head_gender?: string;
+            greywage?: string;
+            way?: string;
+            extraversion?: number;
+            independ?: number;
+            selfcontrol?: number;
+            anxiety?: number;
+            novator?: number;
+        };
+        type StockCsvRow = CsvRow & { Date?: string; AMZN?: number; DPZ?: number; BTC?: number; NFLX?: number };
+        type BenefitCsvRow = CsvRow & { job_id?: string; inferred?: number; type?: string };
 
         // 3. Seed Salary Data
         console.log('Seeding Salary Data...');
-        const salaryData = loadCSV('Salary.csv');
+        const salaryData = loadCSV<SalaryCsvRow>('Salary.csv');
         for (const row of salaryData) {
             await query(
                 'INSERT INTO dataset_salary (years_experience, salary) VALUES ($1, $2)',
@@ -58,7 +83,7 @@ async function seedDatasets() {
 
         // 4. Seed Turnover Data
         console.log('Seeding Turnover Data...');
-        const turnoverData = loadCSV('turnover.csv');
+        const turnoverData = loadCSV<TurnoverCsvRow>('turnover.csv');
         for (const row of turnoverData) {
             await query(
                 `INSERT INTO dataset_turnover (stag, event, gender, age, industry, profession, traffic, coach, head_gender, greywage, way, extraversion, independ, selfcontrol, anxiety, novator)
@@ -86,7 +111,7 @@ async function seedDatasets() {
 
         // 5. Seed Stock Data
         console.log('Seeding Stock Data...');
-        const stockData = loadCSV('stock/portfolio_data.csv');
+        const stockData = loadCSV<StockCsvRow>('stock/portfolio_data.csv');
         for (const row of stockData) {
             await query(
                 'INSERT INTO dataset_stock (date, amzn, dpz, btc, nflx) VALUES ($1, $2, $3, $4, $5)',
@@ -96,7 +121,7 @@ async function seedDatasets() {
 
         // 6. Seed Benefits Data
         console.log('Seeding Benefits Data...');
-        const benefitsData = loadCSV('linkedinbenefits.csv');
+        const benefitsData = loadCSV<BenefitCsvRow>('linkedinbenefits.csv');
         // Insert in batches or individually
         for (const row of benefitsData) {
             await query(

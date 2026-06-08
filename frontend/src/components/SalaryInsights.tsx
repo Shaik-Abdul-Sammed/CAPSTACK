@@ -428,7 +428,7 @@ const SalaryInsights: React.FC<SalaryInsightsProps> = ({ initialExperience = 5 }
                             ))}
                             {h1bResults.length === 0 && h1bSearch && !searching && (
                                 <Typography variant="body2" color="text.secondary" align="center" sx={{ py: 2 }}>
-                                    No results found for "{h1bSearch}"
+                                    No results found for &quot;{h1bSearch}&quot;
                                 </Typography>
                             )}
                         </List>

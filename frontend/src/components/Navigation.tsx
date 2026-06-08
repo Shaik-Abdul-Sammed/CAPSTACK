@@ -74,6 +74,7 @@ const Navigation = () => {
         { label: 'Budget Planner', href: '/budget-planner', icon: <AccountBalanceWallet sx={{ fontSize: 18 }} /> },
         { label: 'Financial Goals', href: '/goals', icon: <TrackChanges sx={{ fontSize: 18 }} /> },
         { label: 'Tax Calculator', href: '/tax-calculator', icon: <Calculate sx={{ fontSize: 18 }} /> },
+        { label: 'Loan Advisor', href: '/loan-recommendation', icon: <AccountBalance sx={{ fontSize: 18 }} /> },
         { label: 'Financial Reports', href: '/reports', icon: <Assessment sx={{ fontSize: 18 }} /> },
       ]
     },

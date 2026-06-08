@@ -4,11 +4,17 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from app.security.enhanced_models import EnhancedFinancialModels
+from app.security.enanced_models import EnhancedFinancialModels
+from app.security.real_world_data_generator import RealWorldDataGenerator
 
 def main():
     """Train all enhanced models with real-world data"""
     print("=== Training Enhanced Financial Models ===")
+
+    print("Generating training datasets...")
+    generator = RealWorldDataGenerator()
+    generator.save_datasets()
+    print("✅ Datasets generated under data/real_world")
     
     trainer = EnhancedFinancialModels()
     
